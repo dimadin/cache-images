@@ -20,7 +20,6 @@ function mm_ci_manage_page() {
 	global $wpdb;
 ?>
 <div class="wrap">
-<pre><?php var_dump($_POST); ?></pre>
 <h2>Remote Image Caching</h2>
 <?php if ( !isset($_POST['step']) ) : ?>
 <p>Here's how this works:</p>
