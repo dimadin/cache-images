@@ -3,11 +3,30 @@
 Plugin Name: Cache Images
 Plugin URI: http://photomatt.net/#
 Description: Goes through your posts and gives you the option to cache all hotlinked images from a domain locally in your upload folder
-Version: 1.0&alpha;
+Version: 1.1&alpha;
 Author: Matt Mullenweg
 Author URI: http://photomatt.net/
 WordPress Version Required: 1.5
 */
+
+function mkdirr($pathname, $mode = 0777) { // Recursive, Hat tip: PHP.net
+	// Check if directory already exists
+	if ( is_dir($pathname) || empty($pathname) )
+		return true;
+
+	// Ensure a file does not already exist with the same name
+	if ( is_file($pathname) )
+		return false;
+
+	// Crawl up the directory tree
+	$next_pathname = substr( $pathname, 0, strrpos($pathname, DIRECTORY_SEPARATOR) );
+	if ( mkdirr($next_pathname, $mode) ) {
+		if (!file_exists($pathname))
+			return mkdir($pathname, $mode);
+	}
+
+	return false;
+}
 
 function mm_ci_add_pages() {
 	
@@ -64,7 +83,6 @@ endforeach;
 	<input type="submit" name="Submit" value="Cache These Images &raquo;" />
 </p>
 </form>
-<pre><?php var_dump($domains); ?></pre>
 <?php endif; ?>
 
 <?php if ('3' == $_POST['step']) : ?>
@@ -84,15 +102,22 @@ foreach ( $_POST['domains'] as $domain ) :
 	foreach ($posts as $post) :
 		preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', $post->post_content, $matches);
 		$url      = $matches[1][0];
-		$filename = basename($matches[1][0]);
-		$f        = fopen( get_option('fileupload_realpath') . "/$filename", 'w' );
-		$img      = file_get_contents($url);
+		if ( strstr( $url, get_option('fileupload_url') ) )
+			continue; // Already local
+
+		$filename = basename ( $url );
+		$b        = parse_url( $url );
+		$dir      = get_option('fileupload_realpath') . '/' . $domain . dirname ( $b['path'] );
+
+		mkdirr( $dir );
+		$f        = fopen( $dir . '/' . $filename , 'w' );
+		$img      = file_get_contents( $b['scheme'] . '://' . $b['host'] . str_replace(' ', '%20', $b['path']) . $b['query'] );
 		if ( $img ) {
 			fwrite( $f, $img );
 			fclose( $f );
-			$local = get_option('fileupload_url') . "/$filename";
-			$wpdb->query("UPDATE $wpdb->posts SET post_content = REPLACE(post_content, '{$matches[1][0]}', '$local');");
-			echo "<li>Cached {$matches[1][0]}</li>";
+			$local = get_option('fileupload_url') . '/' . $domain . dirname ( $b['path'] ) . "/$filename";
+			$wpdb->query("UPDATE $wpdb->posts SET post_content = REPLACE(post_content, '$url', '$local');");
+			echo "<li>Cached $url</li>";
 			flush();
 		}
 	endforeach;
