@@ -64,9 +64,13 @@ if ( !$posts )
 
 foreach ($posts as $post) :
 	preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', $post->post_content, $matches);
-	$url = parse_url($matches[1][0]);
-	$url['host'] = str_replace('www.', '', $url['host']);
-	$domains[$url['host']]++;
+	
+	foreach ($matches[1] as $url) :
+		$url = parse_url($url);
+		$url['host'] = str_replace('www.', '', $url['host']);
+		$domains[$url['host']]++;
+	endforeach;
+
 endforeach;
 ?>
 <p>We found some goodies. Check the domains that you want to grab images from:</p>
