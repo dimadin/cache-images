@@ -3,7 +3,7 @@
 Plugin Name: Cache Images
 Plugin URI: http://photomatt.net/#
 Description: Goes through your posts and gives you the option to cache all hotlinked images from a domain locally in your upload folder
-Version: 1.1&alpha;
+Version: 1.2
 Author: Matt Mullenweg
 Author URI: http://photomatt.net/
 WordPress Version Required: 1.5
