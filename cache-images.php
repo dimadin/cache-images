@@ -101,25 +101,26 @@ foreach ( $_POST['domains'] as $domain ) :
 <?php 
 	foreach ($posts as $post) :
 		preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', $post->post_content, $matches);
-		$url      = $matches[1][0];
-		if ( strstr( $url, get_option('fileupload_url') ) )
-			continue; // Already local
-
-		$filename = basename ( $url );
-		$b        = parse_url( $url );
-		$dir      = get_option('fileupload_realpath') . '/' . $domain . dirname ( $b['path'] );
-
-		mkdirr( $dir );
-		$f        = fopen( $dir . '/' . $filename , 'w' );
-		$img      = file_get_contents( $b['scheme'] . '://' . $b['host'] . str_replace(' ', '%20', $b['path']) . $b['query'] );
-		if ( $img ) {
-			fwrite( $f, $img );
-			fclose( $f );
-			$local = get_option('fileupload_url') . '/' . $domain . dirname ( $b['path'] ) . "/$filename";
-			$wpdb->query("UPDATE $wpdb->posts SET post_content = REPLACE(post_content, '$url', '$local');");
-			echo "<li>Cached $url</li>";
-			flush();
-		}
+		foreach ( $matches[1] as $url ) :
+			if ( strstr( $url, get_option('fileupload_url') ) )
+				continue; // Already local
+	
+			$filename = basename ( $url );
+			$b        = parse_url( $url );
+			$dir      = get_option('fileupload_realpath') . '/' . $domain . dirname ( $b['path'] );
+	
+			mkdirr( $dir );
+			$f        = fopen( $dir . '/' . $filename , 'w' );
+			$img      = file_get_contents( $b['scheme'] . '://' . $b['host'] . str_replace(' ', '%20', $b['path']) . $b['query'] );
+			if ( $img ) {
+				fwrite( $f, $img );
+				fclose( $f );
+				$local = get_option('fileupload_url') . '/' . $domain . dirname ( $b['path'] ) . "/$filename";
+				$wpdb->query("UPDATE $wpdb->posts SET post_content = REPLACE(post_content, '$url', '$local');");
+				echo "<li>Cached $url</li>";
+				flush();
+			}
+		endforeach;
 	endforeach;
 ?>
 </ul>
