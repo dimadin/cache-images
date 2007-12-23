@@ -1,12 +1,12 @@
 <?php
 /*
 Plugin Name: Cache Images
-Plugin URI: http://photomatt.net/#
+Plugin URI: http://wordpress.org/extend/plugins/cache-images/
 Description: Goes through your posts and gives you the option to cache all hotlinked images from a domain locally in your upload folder
-Version: 1.2
+Version: 1.3
 Author: Matt Mullenweg
 Author URI: http://photomatt.net/
-WordPress Version Required: 1.5
+WordPress Version Required: 2.2
 */
 
 function mkdirr($pathname, $mode = 0777) { // Recursive, Hat tip: PHP.net
@@ -93,7 +93,7 @@ endforeach;
 <?php
 if ( !isset($_POST['domains']) )
 	die("You didn't check any domains, did you change your mind?");
-if ( !is_writable(get_settings('fileupload_realpath')) )
+if ( !is_writable( ABSPATH . get_option('upload_path') ) )
 	die('Your upload folder is not writable');
 
 foreach ( $_POST['domains'] as $domain ) :
@@ -106,12 +106,12 @@ foreach ( $_POST['domains'] as $domain ) :
 	foreach ($posts as $post) :
 		preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', $post->post_content, $matches);
 		foreach ( $matches[1] as $url ) :
-			if ( strstr( $url, get_option('fileupload_url') ) )
+			if ( strstr( $url, get_option('siteurl') . '/' . get_option('upload_path') ) )
 				continue; // Already local
 	
 			$filename = basename ( $url );
 			$b        = parse_url( $url );
-			$dir      = get_option('fileupload_realpath') . '/' . $domain . dirname ( $b['path'] );
+			$dir      = ABSPATH . get_option('upload_path') . '/' . $domain . dirname ( $b['path'] );
 	
 			mkdirr( $dir );
 			$f        = fopen( $dir . '/' . $filename , 'w' );
@@ -119,7 +119,7 @@ foreach ( $_POST['domains'] as $domain ) :
 			if ( $img ) {
 				fwrite( $f, $img );
 				fclose( $f );
-				$local = get_option('fileupload_url') . '/' . $domain . dirname ( $b['path'] ) . "/$filename";
+				$local = get_option('siteurl') . '/' . get_option('upload_path') . '/' . $domain . dirname ( $b['path'] ) . "/$filename";
 				$wpdb->query("UPDATE $wpdb->posts SET post_content = REPLACE(post_content, '$url', '$local');");
 				echo "<li>Cached $url</li>";
 				flush();
