@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/cache-images/
 Description: Goes through your posts and gives you the option to cache all hotlinked images from a domain locally in your upload folder
 Version: 1.3
 Author: Matt Mullenweg
-Author URI: http://photomatt.net/
+Author URI: http://ma.tt/
 WordPress Version Required: 2.2
 */
 
