@@ -3,11 +3,21 @@
 Plugin Name: Cache Images
 Plugin URI: http://wordpress.org/extend/plugins/cache-images/
 Description: Goes through your posts and gives you the option to cache all hotlinked images from a domain locally in your upload folder
-Version: 2.0
+Version: 3.0a1
 Author: Matt Mullenweg
 Author URI: http://ma.tt/
 WordPress Version Required: 2.8
 */
+
+/**
+ * If file is opened directly, return 403 error
+ */
+
+if (!function_exists ('add_action')) {
+	header('Status: 403 Forbidden');
+	header('HTTP/1.1 403 Forbidden');
+	exit();
+}
 
 /**
  * Yes, we're localizing the plugin.  This partly makes sure non-English
@@ -21,15 +31,29 @@ function cache_images_init() {
 }
 add_action( 'init', 'cache_images_init' );
 
-function mm_ci_add_pages() {
-	
-	add_management_page( __('Cache Remote Images', 'cache-images'), __('Cache Remote Images', 'cache-images'), 8, __FILE__,
-'mm_ci_manage_page');
+/**
+ * Add action links to plugins page
+ * Thanks Dion Hulse 
+ * @link http://dd32.id.au/wordpress-plugins/?configure-link
+ * (taken from Adminize plugin)
+ */
+function cache_images_filter_plugin_actions($links, $file){
+	static $this_plugin;
+
+	if( !$this_plugin ) $this_plugin = plugin_basename(__FILE__);
+
+	if( $file == $this_plugin ){
+		$settings_link = '<a href="' . admin_url('options-media.php') . '#cache_images_automatic_caching' . '">' . __('Settings', 'cache-images') . '</a>';
+		$scaning_link = '<a href="' . admin_url('tools.php?page=cache-images/cache-images.php') . '">' . __('Scanning', 'cache-images') . '</a>';
+		$links = array_merge( array($settings_link, $scaning_link), $links); // before other links
+	}
+	return $links;
 }
+add_filter( 'plugin_action_links', 'cache_images_filter_plugin_actions', 10, 2 );
 
 /**
  * Search a multiple array
- * via http://www.php.net/manual/en/function.in-array.php#20594
+ * @link http://www.php.net/manual/en/function.in-array.php#20594
  */
 function in_multi_array($needle, $haystack)
 {
@@ -55,57 +79,74 @@ function in_multi_array($needle, $haystack)
     return $in_multi_array;
 }
 
+/**
+ * Add Cache Images page under Tools
+ */
+function mm_ci_add_pages() {
+	add_management_page( __( 'Cache Remote Images', 'cache-images' ), __( 'Cache Remote Images', 'cache-images' ), 8, __FILE__,
+'mm_ci_manage_page' );
+}
+
 function mm_ci_manage_page() {
 	global $wpdb;
 ?>
 <div class="wrap">
-<h2><?php _e('Remote Image Caching', 'cache-images'); ?></h2>
-<?php if ( !isset($_POST['step']) ) : ?>
-<p><?php _e('Here&#8217;s how this works:', 'cache-images'); ?></p>
+<h2><?php _e( 'Remote Image Caching', 'cache-images' ); ?></h2>
+<p><?php _e( 'Here&#8217;s how this works:', 'cache-images' ); ?></p>
 <ol>
-	<li><?php _e('Click the button below and we&#8217;ll scan all of your posts for remote images', 'cache-images'); ?></li>
-	<li><?php _e('Then you&#8217;ll be presented with a list of domains. For each domain, press button Cache from this domain', 'cache-images'); ?></li>
-	<li><?php _e('The images will be copied to your upload directory, the links in your posts will be updated to the new location, and images will be added to your media library, associated to first post from where they are found.', 'cache-images'); ?></li>
+	<li><?php _e( 'Click the button below and we&#8217;ll scan all of your posts for remote images', 'cache-images' ); ?></li>
+	<li><?php _e( 'Then you&#8217;ll be presented with a list of domains. For each domain, press button Cache from this domain', 'cache-images' ); ?></li>
+	<li><?php _e( 'The images will be copied to your upload directory, the links in your posts will be updated to the new location, and images will be added to your media library, associated to first post from where they are found.', 'cache-images' ); ?></li>
 </ol>
 <?php
-	/*
-	* Show notice for WP Smush.it
-	*/
-	if (!function_exists('wp_smushit')) {
-		?><div class="wp-smushit-notice">
+	/**
+	 * Show notice for WP Smush.it
+	 */
+	if ( !function_exists( 'wp_smushit' ) ) {
+		?><div class="wp-smushit-notice error">
 		<strong><?php _e( "Tip:", "gse_textdomain" );?></strong><br />
 		<?php _e( "You can install plugin WP Smush.it to reduce image file sizes and improve performance using the Smush.it API.", "cache-images" );
-		echo sprintf(__(" (<a href='%s'>read more about WP Smush.it</a>)", "cache-images" ), "http://dialect.ca/code/wp-smushit/");?><br />
-		<?php echo sprintf(__("<a href='%s' class='thickbox'>Install WP Smush.it</a>", "cache-images" ),  esc_url(admin_url('plugin-install.php?tab=plugin-information&plugin=wp-smushit&TB_iframe=true&width=600&height=550')));?><br />
+		echo sprintf(__( " (<a href='%s'>read more about WP Smush.it</a>)", "cache-images" ), "http://dialect.ca/code/wp-smushit/" );?><br />
+		<?php echo sprintf(__( "<a href='%s' class='thickbox'>Install WP Smush.it</a>", "cache-images" ),  esc_url(admin_url( 'plugin-install.php?tab=plugin-information&plugin=wp-smushit&TB_iframe=true&width=600&height=550' )));?><br />
 		</div>
 	<?php }
 ?>
-<form action="" method="post">
-<p class="submit">
-	<input name="step" type="hidden" id="step" value="2">
-	<input type="submit" name="Submit" value="<?php _e('Scan &raquo;', 'cache-images'); ?>" />
-</p>
-</form>
-<?php endif; ?>
+<script type="text/javascript">
+	function getdomains() {
+		jQuery.ajax({
+			url: ajaxurl, 
+			type: "POST",
+			//contentType: "application/json",
+			data: "action=cache_images&do=getdomains",
+			success: function(result) {
+				if (result === 'null') {
+					setStatusMessage('<?php _e( 'No posts with images were found.', 'cache-images' ); ?>');
+					return;
+				}
+				var list = eval(result);
+				var curr = 0;
+				
+				setStatusMessage('<?php _e( 'We found some results. Choose the domains from where you want to grab images from by clicking on a button "Cache from this domain" next to it.', 'cache-images' ); echo '<br />'; _e( '<strong>Note</strong>: you <strong>must not close</strong> this page while caching is performed. You can close it when you see message "Done caching from..." and yellow bar is removed', 'cache-images' ); ?>');
+				
+				function domainList() {
+					if (curr >= list.length) {
+						return;
+					}
+					jQuery("#listofdomains").after("<li id=\"domain_" + list[curr].domainmd5 + "\"><label><code>" + list[curr].domain + "</code> (<?php printf(__( 'results: %1$s', 'cache-images' ), '" + list[curr].num + "'); ?>) <input type=\"button\" onClick=\"javascript:regenerate('" + list[curr].domain + "\', \'" + list[curr].domainmd5 + "\');\" class=\"button\" name=\"cache_images_" + list[curr].domainmd5 + "\" id=\"cache_images_" + list[curr].domainmd5 + "\" value=\"<?php _e( 'Cache from this domain', 'cache-images' ) ?>\" /> </label></li>");
+					curr = curr + 1;
+					domainList();
+				}
 
-<?php if ('2' == $_POST['step']) : ?>
-<?php
-$posts = $wpdb->get_results("SELECT post_content FROM $wpdb->posts WHERE post_content LIKE ('%<img%')");
-
-if ( !$posts ) 
-	die(__("No posts with images were found.", "cache-images") );
-
-foreach ($posts as $post) :
-	preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', $post->post_content, $matches);
-	
-	foreach ($matches[1] as $url) :
-		$url = parse_url($url);
-		$url['host'] = str_replace('www.', '', $url['host']);
-		$domains[$url['host']]++;
-	endforeach;
-
-endforeach;
-?>
+				domainList();
+			},
+			error: function(request, status, error) {
+				var errormessageone = "<?php _e( 'Error %1$s', 'cache-images' ); ?>";
+				var errormessage = errormessageone.replace("%1$s", request.status);
+				setMessage(errormessage);
+			}
+		});
+	}
+</script>
 <script type="text/javascript">
 		
 		
@@ -114,9 +155,14 @@ endforeach;
 			jQuery("#message").show();
 		}
 		
+		function setStatusMessage(msg) {
+			jQuery("#status-message").html(msg);
+			jQuery("#status-message").show();
+		}
+		
 		function regenerate(domain,domainmd5) {
 			jQuery("#cache_images_" + domainmd5).attr("disabled", true);
-			setMessage("<?php _e('Reading posts...', 'cache-images'); ?>");
+			setMessage("<?php _e( 'Reading posts...', 'cache-images' ); ?>");
 			jQuery.ajax({
 				url: ajaxurl, 
 				type: "POST",
@@ -131,13 +177,13 @@ endforeach;
 							jQuery("#cache_images_" + domainmd5).removeAttr("disabled");
 							jQuery("#thumb").hide();
 							jQuery("#domain_" + domainmd5).hide();
-							var donecachingone = "<?php _e('Done caching from %1$s', 'cache-images'); ?>";
+							var donecachingone = "<?php _e( 'Done caching from %1$s', 'cache-images' ); ?>";
 							var donecaching = donecachingone.replace("%1$s", domain);
 							setMessage(donecaching);
 							jQuery("#message").fadeOut(1300);
 							return;
 						}
-						var cachestatusone = "<?php _e('Caching %1$s of %2$s', 'cache-images'); ?>";
+						var cachestatusone = "<?php _e( 'Caching %1$s of %2$s', 'cache-images' ); ?>";
 						var cachestatustwo = cachestatusone.replace("%1$s", curr+1);
 						var cachestatus = cachestatustwo.replace("%2$s", list.length);
 						setMessage(cachestatus);
@@ -159,7 +205,7 @@ endforeach;
 					regenItem();
 				},
 				error: function(request, status, error) {
-					var errormessageone = "<?php _e('Error %1$s', 'cache-images'); ?>";
+					var errormessageone = "<?php _e( 'Error %1$s', 'cache-images' ); ?>";
 					var errormessage = errormessageone.replace("%1$s", request.status);
 					setMessage(errormessage);
 				}
@@ -168,50 +214,33 @@ endforeach;
 		
 		
 </script>
-<?php
-	$this_domain = parse_url(get_option('siteurl'));
-	$this_domain['host'] = str_replace('www.', '', $this_domain['host']);
-	$this_domain_md5 = md5( $this_domain['host'] );
-?>
-<script type="text/javascript">
-jQuery(document).ready(function()
-{
-	jQuery("#domain_<?php echo $this_domain_md5; ?>").hide();
-});
-</script>
-<p><?php _e('We found some results. Choose the domains from where you want to grab images from by clicking on a button "Cache from this domain" next to it.', 'cache-images'); ?></p>
-<p><?php _e('<strong>Note</strong>: you <strong>must not close</strong> this page while caching is performed. You can close it when you see message "Done caching from..." and yellow bar is removed', 'cache-images'); ?></p>
-<div id="message" class="updated fade" style="display:none"></div>
-		<div id="thumb" style="display:none"><?php printf(__('Last cached picture: %1$s', 'cache-images'), '<span id="thumb-img"></span>'); ?></div>
+<div id="status-message" class="updated fade" style="display:none"></div>
 <form action="" method="post">
+<p class="submit">
+	<input name="step" type="hidden" id="step" value="2">
+	<input type="button" onClick="javascript:getdomains();" class="button" name="Submit" value="<?php _e( 'Scan &raquo;', 'cache-images' ); ?>" />
+</p>
 <ul>
-<?php foreach ($domains as $domain => $num) : ?>
-	<?php if ( strstr( $domain, get_option('siteurl') . '/' . get_option('upload_path') ) )
-		continue; // Already local ?>
-	<?php $domain_md5 = md5( $domain ); ?>
-	<li id="domain_<?php echo $domain_md5; ?>">
-		<label><code><?php echo $domain; ?></code> <?php printf(_n('(%1$s image found)', '(%1$s images found)', $num, 'cache-images'), $num); ?> <input type="button" onClick="javascript:regenerate('<?php echo $domain; ?>', '<?php echo $domain_md5; ?>');" class="button" name="cache_images_<?php echo $domain_md5; ?>" id="cache_images_<?php echo $domain_md5; ?>" value="<?php _e( 'Cache from this domain', 'cache-images' ) ?>" /> </label>
-	</li>
-<?php endforeach; ?>
+	<li id="listofdomains"></li>
 </ul>
 </form>
-<?php endif; ?>
-
+<div id="message" class="updated fade" style="display:none"></div>
+		<div id="thumb" style="display:none"><?php printf( __( 'Last cached picture: %1$s', 'cache-images' ), '<span id="thumb-img"></span>' ); ?></div>
 </div>
 <?php
 }
-
 add_action('admin_menu', 'mm_ci_add_pages');
 
-
-add_action('wp_ajax_cache_images', 'cache_images_ajax');
- 
+/**
+ * Handle AJAX requests
+ */
 function cache_images_ajax() {
 	global $wpdb;
 	$action = $_POST["do"];
-	$domain = $_POST["domain"];
 
 	if ($action == "getlist") {
+		$domain = $_POST["domain"];
+		
 		$postid_list = $wpdb->get_results("SELECT DISTINCT ID FROM $wpdb->posts WHERE post_content LIKE ('%<img%') AND post_content LIKE ('%$domain%')");
 
 		foreach ( $postid_list as $v ) {
@@ -228,43 +257,161 @@ function cache_images_ajax() {
 	} else if ($action == "regen") {
 		$url = $_POST["url"];
 		$postid = $_POST["postid"];
-		$orig_url = $url;
 		
-		//check if pic is on Blogger
-		if (strpos($url, 'blogspot.com') || strpos($url, 'blogger.com') || strpos($url, 'ggpht.com') || strpos($url, 'googleusercontent.com') || strpos($url, 'gstatic.com')) {
-			$response = wp_remote_request($url);
-			if ( is_wp_error( $response ) )
-				die('error1');
-				
-			$my_body = wp_remote_retrieve_body($response);
-			
-			if (strpos($my_body, 'src')) {
-				preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', $my_body, $matches);
-				foreach ( $matches[1] as $url ) :
-					$spisak = $url;
-				endforeach;
-				
-				$url = $spisak;
-			}
-		}
-		
-		set_time_limit( 30 );
-		$upload = media_sideload_image($url, $postid);
-			
-		if ( !is_wp_error($upload) ) {
-			preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', $upload, $locals);
-			foreach ( $locals[1] as $newurl ) :
-				$wpdb->query("UPDATE $wpdb->posts SET post_content = REPLACE(post_content, '$orig_url', '$newurl');");
-			endforeach;
-		}
+		$url = cache_images_cache_image($url, $postid);
 
 		die( $url );
+	} else if ($action == "getdomains") {
+		$posts = $wpdb->get_results("SELECT post_content FROM $wpdb->posts WHERE post_content LIKE ('%<img%') AND post_status LIKE ('%publish%') OR post_status LIKE ('%draft%')");
+
+		if ( !$posts ) 
+			die( __( "No posts with images were found.", "cache-images" ) );
+
+		foreach ($posts as $post) :
+			$domains = cache_images_find_images($post->post_content, $domains);
+		endforeach;
+		
+		$local_domain = parse_url( get_option( 'siteurl' ) );
+
+		foreach ($domains as $domain => $num) :
+			if ( strstr( $domain,  $local_domain['host'] ) )
+				continue; // Already local
+			$domain_md5 = md5( $domain );
+			$res[] = array('domain' => $domain, 'num' => $num, 'domainmd5' => $domain_md5);
+		endforeach;
+		
+		die( json_encode($res) );
 	}
 }
+add_action('wp_ajax_cache_images', 'cache_images_ajax');
+
+/**
+ * Find external images in provided content
+ */
+function cache_images_find_images($content, $domains) {
+	preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', $content, $matches);
+	
+	foreach ($matches[1] as $url) :
+		$url = parse_url($url);
+		$domains[$url['host']]++;
+	endforeach;
+	
+	return $domains;
+}
+
+/**
+ * Cache image from provided URL
+ *
+ * Add image to media library and
+ * replace all occurences of it
+ */
+function cache_images_cache_image($url, $postid) {
+	global $wpdb;
+	$orig_url = $url;
+	
+	//check if pic is on Blogger
+	if (strpos($url, 'blogspot.com') || strpos($url, 'blogger.com') || strpos($url, 'ggpht.com') || strpos($url, 'googleusercontent.com') || strpos($url, 'gstatic.com')) {
+		$response = wp_remote_request($url);
+		if ( is_wp_error( $response ) )
+			return 'error1';
+			
+		$my_body = wp_remote_retrieve_body($response);
+		
+		if (strpos($my_body, 'src')) {
+			preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', $my_body, $matches);
+			foreach ( $matches[1] as $url ) :
+				$spisak = $url;
+			endforeach;
+			
+			$url = $spisak;
+		}
+	}
+	
+	set_time_limit( 300 );
+	$upload = media_sideload_image($url, $postid);
+		
+	if ( !is_wp_error($upload) ) {
+		preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', $upload, $locals);
+		foreach ( $locals[1] as $newurl ) :
+			$wpdb->query("UPDATE $wpdb->posts SET post_content = REPLACE(post_content, '$orig_url', '$newurl');");
+		endforeach;
+	}
+	
+	return $url;
+}
+
+/**
+ * Cache images on post's saving
+ */
+function cache_images_save_post($post_ID, $post) {
+	global $wpdb;
+
+	$cache_images_settings = get_option( 'cache_images_automatic_caching' );
+
+	if ( $cache_images_settings && $cache_images_settings == 1 ) {
+		if ( wp_is_post_autosave($post_ID) || wp_is_post_revision($post_ID) )
+			return $post_ID;
+		
+		$domains = cache_images_find_images($post->post_content, $domains);
+		
+		$local_domain = parse_url( get_option( 'siteurl' ) );
+
+		foreach ($domains as $domain => $num) :
+			if ( strstr( $domain,  $local_domain['host'] ) )
+				continue; // Already local
+
+			preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', $post->post_content, $matches);
+			foreach ( $matches[1] as $url ) :
+				if ( strstr( $url, get_option('siteurl') . '/' . get_option('upload_path') ) || !strstr( $url, $domain) || (($res) && in_multi_array($url, $res)))
+					continue; // Already local
+				cache_images_cache_image($url, $post_ID);
+			endforeach;
+		endforeach;
+		
+		return $post_ID;
+	}
+
+	return $post_ID;
+}
+add_action( 'save_post', 'cache_images_save_post', 10, 2 );
+
+/**
+ * Add section & field on Media Settings page
+ * @link http://planetozh.com/blog/2009/05/handling-plugins-options-in-wordpress-28-with-register_setting/
+ * @link http://ottopress.com/2009/wordpress-settings-api-tutorial/
+ */
+function cache_images_add_settings_field() {
+	add_settings_section( 'cache_images_settings_section', __( 'Cache Images', 'cache-images' ), 'cache_images_section_callback', 'media' );
+	add_settings_field( 'cache_images_automatic_caching' , __( 'Automatic caching', 'cache-images' ) , 'cache_images_field_settings_form' , 'media' , 'cache_images_settings_section' );
+	register_setting( 'media', 'cache_images_automatic_caching' );
+}
+
+function cache_images_section_callback() {
+}
+
+/**
+ * Print field on Media Settings page
+ * @link http://planetozh.com/blog/2009/05/handling-plugins-options-in-wordpress-28-with-register_setting/
+ * @link http://ottopress.com/2009/wordpress-settings-api-tutorial/
+ */
+function cache_images_field_settings_form() {
+	?>
+	<label><input name="cache_images_automatic_caching" id="cache_images_automatic_caching" type="checkbox" value="1" 
+	<?php checked( '1', get_option( 'cache_images_automatic_caching' ) ); ?> /> <?php _e( 'Automatically cache images on post\'s saving', 'cache-images' ); ?> </label>
+<?php
+}
+add_action( 'admin_init', 'cache_images_add_settings_field' );
+
 /*
 to do:
 if pic from Blogger has + in it, how to handle it
 cache only on page where is found
 check if image is in array
 */
+
+
+/**
+ * New code:
+ * cache both links and sources
+ */
 ?>

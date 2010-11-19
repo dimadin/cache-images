@@ -31,6 +31,11 @@ Read more information about usage on [author's site](http://blog.milandinic.com/
 
 == Changelog ==
 
+= 3.0 =
+* Released on
+* Complete ajaxification of a plugin
+* Option for automatic caching on post's saving
+
 = 2.0 =
 * Complete rewrite of plugin
 * Images are now sideloaded via built in function and added to WordPress' media library
