@@ -35,6 +35,10 @@ Read more information about usage on [author's site](http://blog.milandinic.com/
 * Released on
 * Complete ajaxification of a plugin
 * Option for automatic caching on post's saving
+* Option to cache linked images
+* Made standalone functions for finding and caching
+* Improved documentation
+* Code cleanup
 
 = 2.0 =
 * Complete rewrite of plugin
