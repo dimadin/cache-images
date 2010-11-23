@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cache Images 2.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/cache-images\n"
-"POT-Creation-Date: 2010-07-31 22:04+0000\n"
+"POT-Creation-Date: 2010-11-23 13:36+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Milan Dinić <milan@srpski.biz>\n"
 "Language-Team: Milan <milan@srpski.biz>\n"
@@ -16,103 +16,145 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3;    plural=n%10==1 && n%100!=11 ? 0 :    n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
-#: cache-images.php:26
+#: cache-images.php:46
+msgid "Settings"
+msgstr "Подешавања"
+
+#: cache-images.php:47
+msgid "Scanning"
+msgstr "Претраживање"
+
+#: cache-images.php:86
 msgid "Cache Remote Images"
 msgstr "Сними удаљене слике"
 
-#: cache-images.php:62
+#: cache-images.php:94
 msgid "Remote Image Caching"
 msgstr "Снимање удаљених слика"
 
-#: cache-images.php:64
+#: cache-images.php:95
 msgid "Here&#8217;s how this works:"
 msgstr "Ево како ово ради:"
 
-#: cache-images.php:66
+#: cache-images.php:97
 msgid "Click the button below and we&#8217;ll scan all of your posts for remote images"
 msgstr "Притисните на дугме испод и ми ћемо претражити све ваше чланке за удаљене слике"
 
-#: cache-images.php:67
+#: cache-images.php:97
+#: cache-images.php:315
+msgid "Button <strong>Scan</strong> will search only for images that are hotlinked (ie. used like in example <code><img src=\"http://example.com/pisture.jpg\" /></code>), while button <strong>Scan (including linked)</strong> will search for images that are only linked from this site (ie. ised like in example <code><a href=\"http://example.com/pisture.jpg\">example</a></code>). Use second button with caution!"
+msgstr "Дугме <strong>Претражи</strong> ће тражити само слике које су уграђене (тј. које се користе као у примеру <code><img src=\"http://example.com/pisture.jpg\" /></code>), док дугме <strong>Претражи (укључујући само повезане)</strong> ће потражити и слике које су само наведене у везама са овог веб места (тј. које се користе као у примеру <code><a href=\"http://example.com/pisture.jpg\">пример</a></code>). Користите друго дугме са опрезом!"
+
+#: cache-images.php:98
 msgid "Then you&#8217;ll be presented with a list of domains. For each domain, press button Cache from this domain"
 msgstr "Онда ће вам се приказати списак домена. За сваки домен, притисните на дугме Сними са овог домена"
 
-#: cache-images.php:68
+#: cache-images.php:99
 msgid "The images will be copied to your upload directory, the links in your posts will be updated to the new location, and images will be added to your media library, associated to first post from where they are found."
 msgstr "Слике ће бити снимљене у вашем директоријуму отпремања, веза у вашим чланцима ће бити ажуриране на ново место и све слике ће бити додате у вашу библиотеку садржаја, повезане уз први чланак где су пронађене."
 
-#: cache-images.php:76
+#: cache-images.php:107
 msgid "Tip:"
 msgstr "Савет:"
 
-#: cache-images.php:77
+#: cache-images.php:108
 msgid "You can install plugin WP Smush.it to reduce image file sizes and improve performance using the Smush.it API."
 msgstr "Можете поставити додатак WP Smush.it да бисте смањили величину датотека слика и повећали учинак користећи Smush.it API."
 
-#: cache-images.php:78
+#: cache-images.php:109
 #, php-format
 msgid " (<a href='%s'>read more about WP Smush.it</a>)"
 msgstr " (<a href='%s'>сазнајте више о WP Smush.it</a>)"
 
-#: cache-images.php:79
+#: cache-images.php:110
 #, php-format
 msgid "<a href='%s' class='thickbox'>Install WP Smush.it</a>"
 msgstr "<a href='%s' class='thickbox'>Постави WP Smush.it</a>"
 
-#: cache-images.php:86
-msgid "Scan &raquo;"
-msgstr "Претражи &raquo;"
-
-#: cache-images.php:96
+#: cache-images.php:123
+#: cache-images.php:159
+#: cache-images.php:387
+#: cache-images.php:407
+#: cache-images.php:423
 msgid "No posts with images were found."
 msgstr "Нема пронађених чланака са сликама."
 
-#: cache-images.php:119
-msgid "Reading posts..."
-msgstr "Читање чланака..."
+#: cache-images.php:129
+#: cache-images.php:165
+msgid "We found some results. Choose the domains from where you want to grab images from by clicking on a button \"Cache from this domain\" next to it."
+msgstr "Пронашли смо неке резултате. Одаберите домене са којих желите да зграбите слике притиском на дугме „Сними са овог домена“ које се налази поред назива домена."
 
-#: cache-images.php:134
+#: cache-images.php:129
+#: cache-images.php:165
+msgid "<strong>Note</strong>: you <strong>must not close</strong> this page while caching is performed. You can close it when you see message \"Done caching from...\" and yellow bar is removed"
+msgstr "<strong>Напомена</strong>: <strong>немојте да затварате</strong> ову страницу док се врши снимање. Можете је затворити када видите поруку „Завршено снимање са...“ и када је жута трака уклоњена"
+
+#: cache-images.php:135
+#: cache-images.php:171
 #, php-format
-msgid "Done caching from %1$s"
-msgstr "Завршено снимање са %1$s"
+msgid "results: %1$s"
+msgstr "резултата: %1$s"
 
-#: cache-images.php:140
-#, php-format
-msgid "Caching %1$s of %2$s"
-msgstr "Снимање %1$s. од %2$s слика"
+#: cache-images.php:135
+#: cache-images.php:171
+msgid "Cache from this domain"
+msgstr "Сними са овог домена"
 
-#: cache-images.php:162
+#: cache-images.php:143
+#: cache-images.php:179
+#: cache-images.php:244
+#: cache-images.php:296
 #, php-format
 msgid "Error %1$s"
 msgstr "Грешка %1$s"
 
-#: cache-images.php:182
-msgid "We found some results. Choose the domains from where you want to grab images from by clicking on a button \"Cache from this domain\" next to it."
-msgstr "Пронашли смо неке резултате. Одаберите домене са којих желите да зграбите слике притиском на дугме „Сними са овог домена“ које се налази поред назива домена."
+#: cache-images.php:201
+#: cache-images.php:253
+msgid "Reading posts..."
+msgstr "Читање чланака..."
 
-#: cache-images.php:183
-msgid "<strong>Note</strong>: you <strong>must not close</strong> this page while caching is performed. You can close it when you see message \"Done caching from...\" and yellow bar is removed"
-msgstr "<strong>Напомена</strong>: <strong>немојте да затварате</strong> ову страницу док се врши снимање. Можете је затворити када видите поруку „Завршено снимање са...“ и када је жута трака уклоњена"
+#: cache-images.php:216
+#: cache-images.php:268
+#, php-format
+msgid "Done caching from %1$s"
+msgstr "Завршено снимање са %1$s"
 
-#: cache-images.php:185
+#: cache-images.php:222
+#: cache-images.php:274
+#, php-format
+msgid "Caching %1$s of %2$s"
+msgstr "Снимање %1$s. од %2$s слика"
+
+#: cache-images.php:313
+msgid "Scan &raquo;"
+msgstr "Претражи &raquo;"
+
+#: cache-images.php:314
+msgid "Scan (including linked) &raquo;"
+msgstr "Претражи (укључујући само повезане) &raquo;"
+
+#: cache-images.php:314
+msgid "what is difference?"
+msgstr "која је разлика?"
+
+#: cache-images.php:322
 #, php-format
 msgid "Last cached picture: %1$s"
 msgstr "Последња снимљена слика: %1$s"
 
-#: cache-images.php:193
-#, php-format
-msgid "(%1$s image found)"
-msgid_plural "(%1$s images found)"
-msgstr[0] "(%1$s слика је пронађена)"
-msgstr[1] "(%1$s слике су пронађене)"
-msgstr[2] "(%1$s слика је пронађено)"
-
-#: cache-images.php:193
-msgid "Cache from this domain"
-msgstr "Сними са овог домена"
-
+#. #-#-#-#-#  plugin.pot (Cache Images 3.0a2)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
+#: cache-images.php:541
 msgid "Cache Images"
 msgstr "Сними слике"
+
+#: cache-images.php:542
+msgid "Automatic caching"
+msgstr "Аутоматско снимање"
+
+#: cache-images.php:557
+msgid "Automatically cache images on post&#8217;s saving"
+msgstr "Аутоматски сними удаљене слике приликом снимања чланка"
 
 #. Plugin URI of the plugin/theme
 msgid "http://wordpress.org/extend/plugins/cache-images/"
@@ -130,3 +172,9 @@ msgstr "Мет Муленвег"
 msgid "http://ma.tt/"
 msgstr "http://ma.tt/"
 
+#~ msgid "(%1$s image found)"
+
+#~ msgid_plural "(%1$s images found)"
+#~ msgstr[0] "(%1$s слика је пронађена)"
+#~ msgstr[1] "(%1$s слике су пронађене)"
+#~ msgstr[2] "(%1$s слика је пронађено)"
