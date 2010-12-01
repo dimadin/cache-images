@@ -35,6 +35,12 @@ Read more information about usage on [author's site](http://blog.milandinic.com/
 
 == Changelog ==
 
+= 3.1 =
+* Released on
+* Tries to fix issue with bad Blogger's URLs
+* Tries to fix issue with "invalid argument for foreach" error
+* Fixed unescaped characters in code examples
+
 = 3.0 =
 * Released on 25th November 2010
 * Complete ajaxification of a plugin

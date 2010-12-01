@@ -3,7 +3,7 @@
 Plugin Name: Cache Images
 Plugin URI: http://wordpress.org/extend/plugins/cache-images/
 Description: Goes through your posts and gives you the option to cache all hotlinked images from a domain locally in your upload folder
-Version: 3.0
+Version: 3.1a1
 Author: Matt Mullenweg
 Author URI: http://ma.tt/
 WordPress Version Required: 2.8
@@ -94,7 +94,7 @@ function mm_ci_manage_page() {
 <h2><?php _e( 'Remote Image Caching', 'cache-images' ); ?></h2>
 <p><?php _e( 'Here&#8217;s how this works:', 'cache-images' ); ?></p>
 <ol>
-	<li><?php _e( 'Click the button below and we&#8217;ll scan all of your posts for remote images', 'cache-images' ); ?> (<em><?php _e( 'Button <strong>Scan</strong> will search only for images that are hotlinked (ie. used like in example <code><img src="http://example.com/pisture.jpg" /></code>), while button <strong>Scan (including linked)</strong> will search for images that are only linked from this site (ie. ised like in example <code><a href="http://example.com/pisture.jpg">example</a></code>). Use second button with caution!', 'cache-images' ); ?></em>)</li>
+	<li><?php _e( 'Click the button below and we&#8217;ll scan all of your posts for remote images', 'cache-images' ); ?> (<em><?php _e( 'Button <strong>Scan</strong> will search only for images that are hotlinked (ie. used like in example  <code>&lt;img src="http://example.com/picture.jpg" /&gt;</code>), while button <strong>Scan (including linked)</strong> will search for images that are only linked from this site (ie. ised like in example <code>&lt;a href="http://example.com/picture.jpg"&gt;example&lt;/a&gt;</code>). Use second button with caution!', 'cache-images' ); ?></em>)</li>
 	<li><?php _e( 'Then you&#8217;ll be presented with a list of domains. For each domain, press button Cache from this domain', 'cache-images' ); ?></li>
 	<li><?php _e( 'The images will be copied to your upload directory, the links in your posts will be updated to the new location, and images will be added to your media library, associated to first post from where they are found.', 'cache-images' ); ?></li>
 </ol>
@@ -312,7 +312,7 @@ function mm_ci_manage_page() {
 	<input name="step" type="hidden" id="step" value="2">
 	<input type="button" onClick="javascript:getdomains();" class="button" name="Submit" value="<?php _e( 'Scan &raquo;', 'cache-images' ); ?>" />
 	<input type="button" onClick="javascript:getalldomains();" class="button" name="Submit" style="margin-left: 200px;" value="<?php _e( 'Scan (including linked) &raquo;', 'cache-images' ); ?>" /> (<a onClick="javascript:showexplanation();" href="#"><?php _e( 'what is difference?', 'cache-images' ); ?></a>)
-	<div id="explain-all-domains" class="notice" style="display:none"><?php _e( 'Button <strong>Scan</strong> will search only for images that are hotlinked (ie. used like in example <code><img src="http://example.com/pisture.jpg" /></code>), while button <strong>Scan (including linked)</strong> will search for images that are only linked from this site (ie. ised like in example <code><a href="http://example.com/pisture.jpg">example</a></code>). Use second button with caution!', 'cache-images' ); ?></div>
+	<div id="explain-all-domains" class="notice" style="display:none"><?php _e( 'Button <strong>Scan</strong> will search only for images that are hotlinked (ie. used like in example  <code>&lt;img src="http://example.com/picture.jpg" /&gt;</code>), while button <strong>Scan (including linked)</strong> will search for images that are only linked from this site (ie. ised like in example <code>&lt;a href="http://example.com/picture.jpg"&gt;example&lt;/a&gt;</code>). Use second button with caution!', 'cache-images' ); ?></div>
 </p>
 <ul>
 	<li id="listofdomains"></li>
@@ -344,7 +344,9 @@ function cache_images_ajax() {
 			foreach ( $matches[1] as $url ) :
 				if ( strstr( $url, get_option('siteurl') . '/' . get_option('upload_path') ) || !strstr( $url, $domain) || (($res) && in_multi_array($url, $res)))
 					continue; // Already local
-				$res[] = array('url' => $url, 'postid' => $postid);
+				$origurl = $url;
+				$url = urlencode($url);
+				$res[] = array('url' => $url, 'postid' => $postid, 'origurl' => $origurl);
 			endforeach;
 		}
 		die( json_encode($res) );
@@ -369,7 +371,9 @@ function cache_images_ajax() {
 				}
 				if ( strstr( $url, get_option('siteurl') . '/' . get_option('upload_path') ) || !strstr( $url, $domain) || (($res) && in_multi_array($url, $res)))
 					continue; // Already local
-				$res[] = array('url' => $url, 'postid' => $postid);
+				$origurl = $url;
+				$url = urlencode($url);
+				$res[] = array('url' => $url, 'postid' => $postid, 'origurl' => $origurl);
 			endforeach;
 		}
 		die( json_encode($res) );
@@ -485,6 +489,7 @@ function cache_images_cache_image($url, $postid) {
 	}
 	
 	set_time_limit( 300 );
+	require_once( ABSPATH . 'wp-admin/includes/media.php' );
 	$upload = media_sideload_image($url, $postid);
 		
 	if ( !is_wp_error($upload) ) {
@@ -510,7 +515,9 @@ function cache_images_save_post($post_ID, $post) {
 			return $post_ID;
 		
 		$domains = cache_images_find_images($post->post_content, $domains);
-		
+		if ( !$domains )
+			return $post_ID;
+
 		$local_domain = parse_url( get_option( 'siteurl' ) );
 
 		foreach ($domains as $domain => $num) :
@@ -563,7 +570,6 @@ add_action( 'admin_init', 'cache_images_add_settings_field' );
 to do:
 if pic from Blogger has + in it, how to handle it
 cache only on page where is found
-check if image is in array
 */
 
 ?>
