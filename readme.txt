@@ -36,10 +36,12 @@ Read more information about usage on [author's site](http://blog.milandinic.com/
 == Changelog ==
 
 = 3.1 =
-* Released on
+* Released on 3rd December 2010
 * Tries to fix issue with bad Blogger's URLs
 * Tries to fix issue with "invalid argument for foreach" error
+* Tries to fix issue with "undefined function media_sideload_image()" error
 * Fixed unescaped characters in code examples
+* Updated screenshot-2
 
 = 3.0 =
 * Released on 25th November 2010
