@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cache Images 2.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/cache-images\n"
-"POT-Creation-Date: 2010-11-23 13:36+0000\n"
+"POT-Creation-Date: 2010-12-03 21:08+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Pedra <marcelo@marcelopedra.com.ar>\n"
+"Last-Translator: Milan Dinić <milan@srpski.biz>\n"
 "Language-Team: AMPM <marcelo@marcelopedra.com.ar>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -43,8 +43,8 @@ msgstr "Haga click en el siguiente bot&oacute;n para escanear todos los art&iacu
 
 #: cache-images.php:97
 #: cache-images.php:315
-msgid "Button <strong>Scan</strong> will search only for images that are hotlinked (ie. used like in example <code><img src=\"http://example.com/pisture.jpg\" /></code>), while button <strong>Scan (including linked)</strong> will search for images that are only linked from this site (ie. ised like in example <code><a href=\"http://example.com/pisture.jpg\">example</a></code>). Use second button with caution!"
-msgstr "El bot&oacute;n <strong>Scan</strong> s&oacute;lo buscar&aacute; im&aacute;genes con hotlinking (ej: <code><img src=\"http://ejemplo.com/imagen.jpg\" /></code>), mientras que el bot&oacute;n <strong>Escanear (incluyendo enlazadas)</strong> va a buscar im&aacute;genes enlazadas solamente desde este sitio (ej: <code><img src=\"http://ejemplo.com/imagen.jpg\" /></code>). Use el segundo bot&oacute;n con precauci&oacute;n!"
+msgid "Button <strong>Scan</strong> will search only for images that are hotlinked (ie. used like in example <code>&lt;img src=\"http://example.com/picture.jpg\" /&gt;</code>), while button <strong>Scan (including linked)</strong> will search for images that are only linked from this site (ie. ised like in example <code>&lt;a href=\"http://example.com/picture.jpg\"&gt;example&lt;/a&gt;</code>). Use second button with caution!"
+msgstr "El bot&oacute;n <strong>Scan</strong> s&oacute;lo buscar&aacute; im&aacute;genes con hotlinking (ej: <code>&lt;img src=\"http://ejemplo.com/imagen.jpg\" /&gt;</code>), mientras que el bot&oacute;n <strong>Escanear (incluyendo enlazadas)</strong> va a buscar im&aacute;genes enlazadas solamente desde este sitio (ej: <code>&lt;a href=\"http://ejemplo.com/imagen.jpg\"&gt;example&lt;/a&gt;</code>). Use el segundo bot&oacute;n con precauci&oacute;n!"
 
 #: cache-images.php:98
 msgid "Then you&#8217;ll be presented with a list of domains. For each domain, press button Cache from this domain"
@@ -74,9 +74,9 @@ msgstr "<a href='%s' class='thickbox'>Instalar WP Smush.it</a>"
 
 #: cache-images.php:123
 #: cache-images.php:159
-#: cache-images.php:387
-#: cache-images.php:407
-#: cache-images.php:423
+#: cache-images.php:392
+#: cache-images.php:412
+#: cache-images.php:428
 msgid "No posts with images were found."
 msgstr "No se encontraron art&iacute;culos con im&aacute;genes."
 
@@ -143,17 +143,17 @@ msgstr "Cu&aacute;l es la diferencia?"
 msgid "Last cached picture: %1$s"
 msgstr "Ultima imagen cacheada: %1$s"
 
-#. #-#-#-#-#  plugin.pot (Cache Images 3.0a2)  #-#-#-#-#
+#. #-#-#-#-#  plugin.pot (Cache Images 3.1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: cache-images.php:541
+#: cache-images.php:550
 msgid "Cache Images"
 msgstr "Cache Images"
 
-#: cache-images.php:542
+#: cache-images.php:551
 msgid "Automatic caching"
 msgstr "Cacheado autom&aacute;tico"
 
-#: cache-images.php:557
+#: cache-images.php:566
 msgid "Automatically cache images on post&#8217;s saving"
 msgstr "Autom&aacute;ticamente cachear im&aacute;genes al guardar entradas"
 
@@ -175,8 +175,8 @@ msgid "http://ma.tt/"
 msgstr "http://ma.tt/"
 
 #~ msgid "(%1$s image found)"
+
 #~ msgid_plural "(%1$s images found)"
 #~ msgstr[0] "(%1$s imagen encontrada)"
 #~ msgstr[1] "(%1$s  im&aacute;genes encontradas)"
 #~ msgstr[2] "(%1$s  im&aacute;genes encontradas)"
-

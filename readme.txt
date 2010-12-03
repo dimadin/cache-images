@@ -2,8 +2,8 @@
 Contributors: dimadin, matt
 Tags: hotlink, images, sideload, media, media library
 Requires at least: 2.8
-Tested up to: 3.0.1
-Stable tag: 3.0
+Tested up to: 3.0.2
+Stable tag: 3.1
 
 Goes through your posts and gives you the option to cache all hotlinked images from a domain locally in your upload folder
 

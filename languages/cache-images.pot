@@ -1,4 +1,4 @@
-# Translation of the WordPress plugin Cache Images 3.1a1 by Matt Mullenweg.
+# Translation of the WordPress plugin Cache Images 3.1 by Matt Mullenweg.
 # Copyright (C) 2010 Matt Mullenweg
 # This file is distributed under the same license as the Cache Images package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Cache Images 3.1a1\n"
+"Project-Id-Version: Cache Images 3.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/cache-images\n"
-"POT-Creation-Date: 2010-12-01 20:25+0000\n"
+"POT-Creation-Date: 2010-12-03 21:08+0000\n"
 "PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,7 +45,7 @@ msgstr ""
 #: cache-images.php:97 cache-images.php:315
 msgid ""
 "Button <strong>Scan</strong> will search only for images that are hotlinked "
-"(ie. used like in example  <code>&lt;img src=\"http://example.com/picture.jpg"
+"(ie. used like in example <code>&lt;img src=\"http://example.com/picture.jpg"
 "\" /&gt;</code>), while button <strong>Scan (including linked)</strong> will "
 "search for images that are only linked from this site (ie. ised like in "
 "example <code>&lt;a href=\"http://example.com/picture.jpg\"&gt;example&lt;/"
@@ -85,8 +85,8 @@ msgstr ""
 msgid "<a href='%s' class='thickbox'>Install WP Smush.it</a>"
 msgstr ""
 
-#: cache-images.php:123 cache-images.php:159 cache-images.php:391
-#: cache-images.php:411 cache-images.php:427
+#: cache-images.php:123 cache-images.php:159 cache-images.php:392
+#: cache-images.php:412 cache-images.php:428
 msgid "No posts with images were found."
 msgstr ""
 
@@ -149,17 +149,17 @@ msgstr ""
 msgid "Last cached picture: %1$s"
 msgstr ""
 
-#. #-#-#-#-#  plugin.pot (Cache Images 3.1a1)  #-#-#-#-#
+#. #-#-#-#-#  plugin.pot (Cache Images 3.1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: cache-images.php:548
+#: cache-images.php:550
 msgid "Cache Images"
 msgstr ""
 
-#: cache-images.php:549
+#: cache-images.php:551
 msgid "Automatic caching"
 msgstr ""
 
-#: cache-images.php:564
+#: cache-images.php:566
 msgid "Automatically cache images on post&#8217;s saving"
 msgstr ""
 

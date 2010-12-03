@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cache Images 2.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/cache-images\n"
-"POT-Creation-Date: 2010-12-01 20:25+0000\n"
+"POT-Creation-Date: 2010-12-03 21:08+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Milan Dinić <milan@srpski.biz>\n"
 "Language-Team: Milan <milan@srpski.biz>\n"
@@ -42,8 +42,8 @@ msgstr "Притисните на дугме испод и ми ћемо пре�
 
 #: cache-images.php:97
 #: cache-images.php:315
-msgid "Button <strong>Scan</strong> will search only for images that are hotlinked (ie. used like in example  <code>&lt;img src=\"http://example.com/picture.jpg\" /&gt;</code>), while button <strong>Scan (including linked)</strong> will search for images that are only linked from this site (ie. ised like in example <code>&lt;a href=\"http://example.com/picture.jpg\"&gt;example&lt;/a&gt;</code>). Use second button with caution!"
-msgstr "Дугме <strong>Претражи</strong> ће тражити само слике које су уграђене (тј. које се користе као у примеру <code>&lt;img src=\"http://example.com/picture.jpg\" /&gt;</code>), док дугме <strong>Претражи (укључујући само повезане)</strong> ће потражити и слике које су само наведене у везама са овог веб места (тј. које се користе као у примеру <code>&lt;a href=\"http://example.com/picture.jpg\"&gt;example&lt;/a&gt;</code>). Користите друго дугме са опрезом!"
+msgid "Button <strong>Scan</strong> will search only for images that are hotlinked (ie. used like in example <code>&lt;img src=\"http://example.com/picture.jpg\" /&gt;</code>), while button <strong>Scan (including linked)</strong> will search for images that are only linked from this site (ie. ised like in example <code>&lt;a href=\"http://example.com/picture.jpg\"&gt;example&lt;/a&gt;</code>). Use second button with caution!"
+msgstr "Дугме <strong>Претражи</strong> ће тражити само слике које су уграђене (тј. које се користе као у примеру <code>&lt;img src=\"http://primer.net/slika.jpg\" /&gt;</code>), док дугме <strong>Претражи (укључујући само повезане)</strong> ће потражити и слике које су само наведене у везама са овог веб места (тј. које се користе као у примеру <code>&lt;a href=\"http://primer.net/slika.jpg\"&gt;example&lt;/a&gt;</code>). Користите друго дугме са опрезом!"
 
 #: cache-images.php:98
 msgid "Then you&#8217;ll be presented with a list of domains. For each domain, press button Cache from this domain"
@@ -73,9 +73,9 @@ msgstr "<a href='%s' class='thickbox'>Постави WP Smush.it</a>"
 
 #: cache-images.php:123
 #: cache-images.php:159
-#: cache-images.php:391
-#: cache-images.php:411
-#: cache-images.php:427
+#: cache-images.php:392
+#: cache-images.php:412
+#: cache-images.php:428
 msgid "No posts with images were found."
 msgstr "Нема пронађених чланака са сликама."
 
@@ -142,17 +142,17 @@ msgstr "која је разлика?"
 msgid "Last cached picture: %1$s"
 msgstr "Последња снимљена слика: %1$s"
 
-#. #-#-#-#-#  plugin.pot (Cache Images 3.1a1)  #-#-#-#-#
+#. #-#-#-#-#  plugin.pot (Cache Images 3.1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: cache-images.php:548
+#: cache-images.php:550
 msgid "Cache Images"
 msgstr "Сними слике"
 
-#: cache-images.php:549
+#: cache-images.php:551
 msgid "Automatic caching"
 msgstr "Аутоматско снимање"
 
-#: cache-images.php:564
+#: cache-images.php:566
 msgid "Automatically cache images on post&#8217;s saving"
 msgstr "Аутоматски сними удаљене слике приликом снимања чланка"
 
