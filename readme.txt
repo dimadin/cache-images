@@ -15,7 +15,7 @@ Cache Images is a plugin that gives users option to sideload images that are hos
 
 It uses AJAX so it means you can sideload large number of images even on slow servers. (AJAX functions are made by fork of code from plugin [AJAX Thumbnail Rebuild](http://wordpress.org/extend/plugins/ajax-thumbnail-rebuild/))
 
-This plugin is fully internationalized. You can find .pot file in <em>languages</em> folder where you should place your translation. Current translations are Serbian and Spanish. Please send your translation by [contacting author](http://blog.milandinic.com/contact/) so that it can be included it in next releases.
+This plugin is fully internationalized. You can find .pot file in <em>languages</em> folder where you should place your translation. Current translations are Serbian, Spanish, and Persian. Please send your translation by [contacting author](http://blog.milandinic.com/contact/) so that it can be included it in next releases.
 
 Read more information about usage on [author's site](http://blog.milandinic.com/wordpress/plugins/cache-images/).
 
